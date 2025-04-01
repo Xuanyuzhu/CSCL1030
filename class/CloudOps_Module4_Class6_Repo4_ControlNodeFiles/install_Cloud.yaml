@@ -1,6 +1,6 @@
 ---
 - name: Install httpd
-  hosts: einstein
+  hosts: Cloud
   remote_user: ec2-user
   become: true
   
