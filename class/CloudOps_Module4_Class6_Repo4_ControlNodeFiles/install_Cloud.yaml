@@ -1,11 +1,11 @@
 ---
-- name: Install httpd
+- name: Install httpd and deploy Cloud page from CSCC1030
   hosts: Cloud
   remote_user: ec2-user
   become: true
   
   tasks:
-    - name: install yum httpd package
+    - name: Install yum httpd package
       yum:
         name: httpd
         state: present
@@ -20,13 +20,19 @@
         src: /home/ec2-user/Cloud.zip
         dest: /var/www/html/
         remote_src: yes
-        extra_opts: [--strip-components=1]
+      # Removed extra_opts because '--strip-components=1' is not supported
+
+    - name: Move extracted files to web root
+      shell: |
+        if [ -d /var/www/html/CSCC1030-master ]; then
+          mv /var/www/html/CSCC1030-master/* /var/www/html/
+          rm -rf /var/www/html/CSCC1030-master
+        fi
+      args:
+        executable: /bin/bash
 
     - name: Start and Enable httpd
       systemd:
         name: httpd
         state: started
         enabled: true
-
-
-
