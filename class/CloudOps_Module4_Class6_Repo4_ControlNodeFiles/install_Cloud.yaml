@@ -10,26 +10,17 @@
         name: httpd
         state: present
 
-    - name: copy zip file to remote server
-      copy:
-        src: /home/ec2-user/Einstein.zip
-        dest: /home/ec2-user/Einstein.zip
+    - name: Download CSCC1030 zip file from GitHub
+      get_url:
+        url: https://github.com/wessamabdelwahab/CSCC1030/archive/refs/heads/master.zip
+        dest: /home/ec2-user/Cloud.zip
 
-    - name: Unarchive a file that is already on the remote machine
+    - name: Unarchive Cloud computing page to web root
       unarchive:
-        src: /home/ec2-user/Einstein.zip
-        dest: /tmp
-        remote_src: yes
-
-    - name: Copy files
-      copy:
-        src: '/tmp/{{item}}'
+        src: /home/ec2-user/Cloud.zip
         dest: /var/www/html/
-        owner: ec2-user
-        remote_src: true
-      loop:
-        - index.html
-        - einstein.jpg  
+        remote_src: yes
+        extra_opts: [--strip-components=1]
 
     - name: Start and Enable httpd
       systemd:
